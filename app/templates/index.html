@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="text-center py-12">
-    <h1 class="text-5xl font-bold mb-4">
+<div class="text-center py-8 md:py-12">
+    <h1 class="text-4xl md:text-5xl font-bold mb-3">
         <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             SameCast
         </span>
@@ -10,5 +10,88 @@
     <p class="text-lg text-base-content/70 mb-8">
         Discover shared cast &amp; crew between any two movies or TV shows
     </p>
+
+    <form id="compare-form" hx-get="/compare" hx-target="#results" hx-swap="innerHTML"
+          hx-indicator="#loading" class="max-w-4xl mx-auto">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Slot 1 -->
+            <div class="space-y-3">
+                <label class="text-sm font-semibold opacity-70 uppercase tracking-wider">Title 1</label>
+                <div class="relative">
+                    <input id="search-1" type="text" placeholder="Search for a movie or TV show..."
+                           class="input input-bordered w-full"
+                           autocomplete="off"
+                           hx-get="/search/autocomplete"
+                           hx-trigger="input changed delay:400ms"
+                           hx-target="#dropdown-1"
+                           hx-swap="innerHTML"
+                           hx-params="none"
+                           hx-vals='{"slot": "1"}'
+                           name="q">
+                    <div id="dropdown-1" class="absolute z-40 w-full mt-1"></div>
+                </div>
+                <div id="selected-1" class="min-h-[80px]">
+                    <p class="text-center opacity-40 py-8">Search above to pick a title</p>
+                </div>
+            </div>
+
+            <!-- Slot 2 -->
+            <div class="space-y-3">
+                <label class="text-sm font-semibold opacity-70 uppercase tracking-wider">Title 2</label>
+                <div class="relative">
+                    <input id="search-2" type="text" placeholder="Search for a movie or TV show..."
+                           class="input input-bordered w-full"
+                           autocomplete="off"
+                           hx-get="/search/autocomplete"
+                           hx-trigger="input changed delay:400ms"
+                           hx-target="#dropdown-2"
+                           hx-swap="innerHTML"
+                           hx-params="none"
+                           hx-vals='{"slot": "2"}'
+                           name="q">
+                    <div id="dropdown-2" class="absolute z-40 w-full mt-1"></div>
+                </div>
+                <div id="selected-2" class="min-h-[80px]">
+                    <p class="text-center opacity-40 py-8">Search above to pick a title</p>
+                </div>
+            </div>
+        </div>
+
+        <button id="compare-btn" type="submit" class="btn btn-primary btn-lg gap-2" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            Compare
+        </button>
+    </form>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="htmx-indicator py-8">
+        <span class="loading loading-dots loading-lg text-primary"></span>
+        <p class="text-sm opacity-60 mt-2">Finding shared cast &amp; crew...</p>
+    </div>
+
+    <!-- Results area -->
+    <div id="results" class="mt-8"></div>
 </div>
+
+<script>
+function checkCompareButton() {
+    const has1 = document.querySelector('input[name="title_id_1"]');
+    const has2 = document.querySelector('input[name="title_id_2"]');
+    const btn = document.getElementById('compare-btn');
+    btn.disabled = !(has1 && has2);
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#search-1') && !e.target.closest('#dropdown-1')) {
+        document.getElementById('dropdown-1').innerHTML = '';
+    }
+    if (!e.target.closest('#search-2') && !e.target.closest('#dropdown-2')) {
+        document.getElementById('dropdown-2').innerHTML = '';
+    }
+});
+</script>
 {% endblock %}

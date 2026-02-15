@@ -1,0 +1,32 @@
+<ul class="menu bg-base-100 rounded-box shadow-lg border border-base-300 max-h-80 overflow-y-auto dropdown-content animate-dropdown">
+{% for r in results %}
+    <li>
+        <a hx-get="{{ url_for('search.select', id=r.id, media_type=r.media_type, title=r.title, year=r.release_year or '', poster_path=r.poster_path or '', slot=slot) }}"
+           hx-target="#selected-{{ slot }}"
+           hx-swap="innerHTML"
+           hx-on::after-request="document.getElementById('dropdown-{{ slot }}').innerHTML = ''; document.getElementById('search-{{ slot }}').value = '';"
+           class="flex items-center gap-3 p-2">
+            {% if r.poster_path %}
+                <img src="https://image.tmdb.org/t/p/w92{{ r.poster_path }}"
+                     alt="" class="w-10 h-14 rounded object-cover flex-shrink-0">
+            {% else %}
+                <div class="w-10 h-14 rounded bg-base-300 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                    </svg>
+                </div>
+            {% endif %}
+            <div class="flex-1 min-w-0">
+                <div class="font-medium truncate">{{ r.title }}</div>
+                <div class="text-xs opacity-60">
+                    {{ r.media_type | capitalize }}
+                    {% if r.release_year %}&middot; {{ r.release_year }}{% endif %}
+                </div>
+            </div>
+        </a>
+    </li>
+{% endfor %}
+{% if not results %}
+    <li class="p-4 text-center opacity-50">No results found</li>
+{% endif %}
+</ul>

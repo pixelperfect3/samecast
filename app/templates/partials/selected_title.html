@@ -1,0 +1,32 @@
+<div class="card card-side bg-base-100 shadow-md border border-base-300 animate-fade-in">
+    <figure class="w-24 flex-shrink-0">
+        {% if poster_path %}
+            <img src="https://image.tmdb.org/t/p/w185{{ poster_path }}"
+                 alt="{{ title }}" class="h-full w-full object-cover">
+        {% else %}
+            <div class="h-full w-full bg-base-300 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                </svg>
+            </div>
+        {% endif %}
+    </figure>
+    <div class="card-body p-4">
+        <h3 class="card-title text-base">{{ title }}</h3>
+        <p class="text-sm opacity-60">
+            {{ media_type | capitalize }}
+            {% if year %}&middot; {{ year }}{% endif %}
+        </p>
+        <input type="hidden" name="title_id_{{ slot }}" value="{{ title_id }}">
+        <input type="hidden" name="media_type_{{ slot }}" value="{{ media_type }}">
+        <button class="btn btn-xs btn-ghost btn-circle absolute top-1 right-1"
+                onclick="this.closest('.card').parentElement.innerHTML = '<p class=\'text-center opacity-40 py-8\'>Search above to pick a title</p>'; checkCompareButton();"
+                aria-label="Remove selection">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script>checkCompareButton();</script>
