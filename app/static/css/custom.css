@@ -1,1 +1,101 @@
-/* Custom animations and styles - will be expanded in Milestone 8 */
+/* ===== Animations ===== */
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: scaleY(0.95) translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: scaleY(1) translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animate-fade-in {
+    animation: fadeSlideIn 0.35s ease-out both;
+}
+
+.animate-dropdown {
+    animation: dropdownIn 0.2s ease-out both;
+    transform-origin: top center;
+}
+
+/* Staggered card reveals */
+.grid > .card {
+    animation: fadeSlideIn 0.35s ease-out both;
+}
+
+/* Card hover lift */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Image fade-in on load */
+img {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ===== HTMX Loading ===== */
+
+.htmx-indicator {
+    display: none;
+}
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    display: block;
+}
+
+/* ===== Theme Toggle ===== */
+
+.theme-toggle {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+/* ===== Search Input Focus ===== */
+
+.input:focus {
+    transition: box-shadow 0.2s ease;
+}
+
+/* ===== Gradient Heading ===== */
+
+.gradient-text {
+    background: linear-gradient(135deg, oklch(var(--p)), oklch(var(--s)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== Responsive Tweaks ===== */
+
+@media (max-width: 640px) {
+    .card-side figure {
+        width: 4.5rem;
+    }
+}
