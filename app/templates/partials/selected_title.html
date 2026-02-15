@@ -1,7 +1,7 @@
 <div class="card card-side bg-base-100 shadow-md border border-base-300 animate-fade-in">
     <figure class="w-24 flex-shrink-0">
         {% if poster_path %}
-            <img src="https://image.tmdb.org/t/p/w185{{ poster_path }}"
+            <img src="/images/poster{{ poster_path }}"
                  alt="{{ title }}" class="h-full w-full object-cover">
         {% else %}
             <div class="h-full w-full bg-base-300 flex items-center justify-center">

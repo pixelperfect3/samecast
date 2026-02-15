@@ -34,7 +34,7 @@
                  style="animation-delay: {{ loop.index0 * 50 }}ms">
                 <figure class="w-20 flex-shrink-0">
                     {% if person.profile_path %}
-                        <img src="https://image.tmdb.org/t/p/w185{{ person.profile_path }}"
+                        <img src="/images/profile{{ person.profile_path }}"
                              alt="{{ person.name }}" class="h-full w-full object-cover"
                              loading="lazy">
                     {% else %}
@@ -78,7 +78,7 @@
                  style="animation-delay: {{ (shared_cast | length + loop.index0) * 50 }}ms">
                 <figure class="w-20 flex-shrink-0">
                     {% if person.profile_path %}
-                        <img src="https://image.tmdb.org/t/p/w185{{ person.profile_path }}"
+                        <img src="/images/profile{{ person.profile_path }}"
                              alt="{{ person.name }}" class="h-full w-full object-cover"
                              loading="lazy">
                     {% else %}
