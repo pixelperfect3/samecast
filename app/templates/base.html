@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cupcake">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SameCast{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+</head>
+<body class="min-h-screen flex flex-col">
+    <nav class="navbar bg-base-200 sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto">
+            <a href="/" class="btn btn-ghost text-xl font-bold">
+                <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    SameCast
+                </span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="flex-1 container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer footer-center p-6 bg-base-200 text-base-content">
+        <div>
+            <p>Data provided by
+                <a href="https://www.themoviedb.org/" target="_blank" class="link link-primary">TMDB</a>.
+                SameCast is not endorsed or certified by TMDB.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
