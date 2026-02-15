@@ -1,20 +1,10 @@
-from app.services.tmdb import TMDBClient
+from app.services.cache import get_title_with_credits
 
 
 def find_shared(title_id_1, media_type_1, title_id_2, media_type_2):
-    """Find shared cast and crew between two titles."""
-    client = TMDBClient()
-
-    # Fetch details + credits for both titles
-    if media_type_1 == "movie":
-        details_1 = client.get_movie_details(title_id_1)
-    else:
-        details_1 = client.get_tv_details(title_id_1)
-
-    if media_type_2 == "movie":
-        details_2 = client.get_movie_details(title_id_2)
-    else:
-        details_2 = client.get_tv_details(title_id_2)
+    """Find shared cast and crew between two titles (uses DB cache)."""
+    details_1 = get_title_with_credits(title_id_1, media_type_1)
+    details_2 = get_title_with_credits(title_id_2, media_type_2)
 
     # Build lookup dicts by person_id
     cast_1 = {c["person_id"]: c for c in details_1["cast"]}
@@ -52,7 +42,6 @@ def find_shared(title_id_1, media_type_1, title_id_2, media_type_2):
             "role_2": crew_2[pid].get("job", ""),
             "department": crew_1[pid].get("department", ""),
         })
-    # Sort crew: Directors first, then by department
     dept_order = {"Directing": 0, "Writing": 1, "Production": 2, "Sound": 3, "Camera": 4}
     shared_crew.sort(key=lambda x: (dept_order.get(x["department"], 99), x["name"]))
 
