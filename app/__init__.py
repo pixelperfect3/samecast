@@ -15,6 +15,8 @@ STARTER_SUGGESTIONS = [
     ("Goodfellas", "The Sopranos"),
     ("Succession", "The Big Short"),
     ("The Grand Budapest Hotel", "The French Dispatch"),
+    ("Dilwale Dulhania Le Jayenge", "Kuch Kuch Hota Hai"),
+    ("Law & Order", "The Wire"),
 ]
 
 
