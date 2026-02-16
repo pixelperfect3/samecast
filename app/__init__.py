@@ -7,7 +7,7 @@ db = SQLAlchemy()
 STARTER_SUGGESTIONS = [
     ("Game of Thrones", "The Crown"),
     ("The Dark Knight", "Inception"),
-    ("Arrested Development", "Ozark"),
+    ("Arrested Development", "Veep"),
     ("The Departed", "Gangs of New York"),
     ("The Office", "The Morning Show"),
     ("Oppenheimer", "Interstellar"),
