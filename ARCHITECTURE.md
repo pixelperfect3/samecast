@@ -14,7 +14,7 @@ graph TB
         CF[Cloudflare DNS/Proxy]
     end
 
-    subgraph Render["Render (Free Tier)"]
+    subgraph Render["Render (Starter Tier)"]
         Gunicorn[Gunicorn WSGI<br/>2 workers]
         Flask[Flask App]
         SQLite[(SQLite DB<br/>instance/samecast.db)]
@@ -50,7 +50,7 @@ graph TB
 | **WSGI Server** | Gunicorn | Production server with 2 workers |
 | **External API** | TMDB API v3 | Movie/TV data source |
 | **DNS/CDN** | Cloudflare | DNS proxy, SSL termination |
-| **Hosting** | Render | Free-tier web service |
+| **Hosting** | Render | Starter tier ($7/month) |
 
 ---
 
