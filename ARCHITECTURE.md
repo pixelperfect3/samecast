@@ -216,9 +216,7 @@ flowchart TD
     B -->|No| D[Fetch from TMDB API]
     B -->|Yes| C{credits_cached<br/>= True?}
     C -->|No| D
-    C -->|Yes| E{Age < 7 days?}
-    E -->|No| D[Fetch from TMDB API]
-    E -->|Yes| F[Load from DB]
+    C -->|Yes| F[Load from DB]
 
     D --> G[Save to DB]
     G --> H[Upsert Title row]
@@ -235,7 +233,7 @@ flowchart TD
 **Key design decisions:**
 - **Search autocomplete always hits TMDB** — ensures fresh, complete results
 - **Comparison uses DB cache** — avoids redundant API calls for previously compared titles
-- **7-day TTL** — balances freshness vs. API usage
+- **Cache is permanent** — movie/TV credits don't change, so no TTL expiration needed
 - **Full credit refresh on cache miss** — deletes all old credits, re-inserts (avoids stale data)
 
 ---

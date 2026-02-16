@@ -1,6 +1,4 @@
-from datetime import datetime, timezone, timedelta
-
-from flask import current_app
+from datetime import datetime, timezone
 
 from app import db
 from app.models import Title, Person, Credit
@@ -13,14 +11,11 @@ def get_title_with_credits(title_id, media_type):
     Returns the same dict format as TMDBClient.get_movie/tv_details().
     """
     title_id = int(title_id)
-    ttl_days = current_app.config.get("CACHE_TTL_DAYS", 7)
 
     # Check cache
     title = Title.query.get(title_id)
     if title and title.credits_cached:
-        age = datetime.now(timezone.utc) - title.cached_at.replace(tzinfo=timezone.utc)
-        if age < timedelta(days=ttl_days):
-            return _load_from_db(title)
+        return _load_from_db(title)
 
     # Cache miss — fetch from TMDB
     client = TMDBClient()
