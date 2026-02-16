@@ -23,10 +23,10 @@
                            class="input input-bordered w-full"
                            autocomplete="off"
                            hx-get="/search/autocomplete"
-                           hx-trigger="input changed delay:400ms"
+                           hx-trigger="input changed delay:400ms, keyup changed delay:400ms"
                            hx-target="#dropdown-1"
                            hx-swap="innerHTML"
-                           hx-params="none"
+                           hx-include="[id='search-1']"
                            hx-vals='{"slot": "1"}'
                            name="q">
                     <div id="dropdown-1" class="absolute z-40 w-full mt-1"></div>
@@ -44,10 +44,10 @@
                            class="input input-bordered w-full"
                            autocomplete="off"
                            hx-get="/search/autocomplete"
-                           hx-trigger="input changed delay:400ms"
+                           hx-trigger="input changed delay:400ms, keyup changed delay:400ms"
                            hx-target="#dropdown-2"
                            hx-swap="innerHTML"
-                           hx-params="none"
+                           hx-include="[id='search-2']"
                            hx-vals='{"slot": "2"}'
                            name="q">
                     <div id="dropdown-2" class="absolute z-40 w-full mt-1"></div>
