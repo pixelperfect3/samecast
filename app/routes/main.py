@@ -1,5 +1,8 @@
+import json
+
 from flask import Blueprint, render_template, request
 
+from app.models import Suggestion
 from app.services.comparison import find_shared
 
 main_bp = Blueprint("main", __name__)
@@ -7,7 +10,9 @@ main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 def index():
-    return render_template("index.html")
+    rows = Suggestion.query.filter_by(active=True).all()
+    suggestions_json = json.dumps([s.to_dict() for s in rows])
+    return render_template("index.html", suggestions_json=suggestions_json)
 
 
 @main_bp.route("/compare")

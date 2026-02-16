@@ -7,9 +7,13 @@
             SameCast
         </span>
     </h1>
-    <p class="text-lg text-base-content/70 mb-8">
+    <p class="text-lg text-base-content/70 mb-4">
         Discover shared cast &amp; crew between any two movies or TV shows
     </p>
+
+    <div id="suggestion-container" class="h-8 mb-6 flex items-center justify-center">
+        <p id="suggestion-text" class="text-sm text-base-content/50 italic suggestion-visible"></p>
+    </div>
 
     <form id="compare-form" hx-get="/compare" hx-target="#results" hx-swap="innerHTML"
           hx-indicator="#loading" class="max-w-4xl mx-auto">
@@ -77,6 +81,32 @@
 </div>
 
 <script>
+(function() {
+    var suggestions = {{ suggestions_json | safe }};
+    if (suggestions.length === 0) return;
+    var el = document.getElementById('suggestion-text');
+    var idx = Math.floor(Math.random() * suggestions.length);
+
+    function show(s) {
+        el.textContent = "Try comparing \u2018" + s.title_1 + "\u2019 and \u2018" + s.title_2 + "\u2019";
+    }
+
+    show(suggestions[idx]);
+
+    if (suggestions.length > 1) {
+        setInterval(function() {
+            el.classList.remove('suggestion-visible');
+            el.classList.add('suggestion-hidden');
+            setTimeout(function() {
+                idx = (idx + 1) % suggestions.length;
+                show(suggestions[idx]);
+                el.classList.remove('suggestion-hidden');
+                el.classList.add('suggestion-visible');
+            }, 500);
+        }, 60000);
+    }
+})();
+
 function checkCompareButton() {
     const has1 = document.querySelector('input[name="title_id_1"]');
     const has2 = document.querySelector('input[name="title_id_2"]');

@@ -92,6 +92,21 @@ img {
     background-clip: text;
 }
 
+/* ===== Suggestion Rotation ===== */
+
+.suggestion-visible,
+.suggestion-hidden {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.suggestion-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.suggestion-hidden {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
 /* ===== Responsive Tweaks ===== */
 
 @media (max-width: 640px) {

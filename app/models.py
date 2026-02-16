@@ -59,3 +59,19 @@ class Credit(db.Model):
 
     def __repr__(self):
         return f"<Credit {self.person_id} in {self.title_id} ({self.credit_type})>"
+
+
+class Suggestion(db.Model):
+    __tablename__ = "suggestions"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title_1 = db.Column(db.String(300), nullable=False)
+    title_2 = db.Column(db.String(300), nullable=False)
+    active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {"title_1": self.title_1, "title_2": self.title_2}
+
+    def __repr__(self):
+        return f"<Suggestion {self.id}: '{self.title_1}' & '{self.title_2}'>"
