@@ -44,7 +44,7 @@ def create_app():
 
 
 def _register_cli(app):
-    from app.models import Suggestion
+    from app.models import Suggestion, Title
 
     @app.cli.group()
     def suggestions():
@@ -81,3 +81,19 @@ def _register_cli(app):
         for s in rows:
             status = "active" if s.active else "inactive"
             click.echo(f"  [{s.id}] {s.title_1}  &  {s.title_2}  ({status})")
+
+    @app.cli.group()
+    def cache():
+        """Manage the title/credits cache."""
+
+    @cache.command()
+    @click.argument("title_id", type=int)
+    def refresh(title_id):
+        """Clear cached credits for a title so it re-fetches from TMDB on next comparison."""
+        title = Title.query.get(title_id)
+        if not title:
+            click.echo(f"Title {title_id} not found in cache.")
+            return
+        title.credits_cached = False
+        db.session.commit()
+        click.echo(f"Cleared cache for: {title.title} ({title.release_year})")

@@ -15,7 +15,10 @@ def get_title_with_credits(title_id, media_type):
     # Check cache
     title = Title.query.get(title_id)
     if title and title.credits_cached:
-        return _load_from_db(title)
+        current_year = datetime.now(timezone.utc).year
+        if title.release_year is None or title.release_year < current_year:
+            return _load_from_db(title)
+        # Current/future year — re-fetch for fresh data
 
     # Cache miss — fetch from TMDB
     client = TMDBClient()

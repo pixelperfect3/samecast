@@ -216,7 +216,9 @@ flowchart TD
     B -->|No| D[Fetch from TMDB API]
     B -->|Yes| C{credits_cached<br/>= True?}
     C -->|No| D
-    C -->|Yes| F[Load from DB]
+    C -->|Yes| E{release_year<br/>>= current year?}
+    E -->|Yes| D[Fetch from TMDB API]
+    E -->|No| F[Load from DB]
 
     D --> G[Save to DB]
     G --> H[Upsert Title row]
@@ -233,7 +235,9 @@ flowchart TD
 **Key design decisions:**
 - **Search autocomplete always hits TMDB** — ensures fresh, complete results
 - **Comparison uses DB cache** — avoids redundant API calls for previously compared titles
-- **Cache is permanent** — movie/TV credits don't change, so no TTL expiration needed
+- **Cache is permanent for past titles** — movie/TV credits don't change after release
+- **Current/future year titles always re-fetch** — credits may be incomplete before release
+- **Manual refresh via CLI** — `flask cache refresh <title_id>` clears cache for any title
 - **Full credit refresh on cache miss** — deletes all old credits, re-inserts (avoids stale data)
 
 ---
