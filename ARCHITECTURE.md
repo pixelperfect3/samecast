@@ -67,10 +67,10 @@ app/
 │   └── images.py            # GET /images/poster/<file>  and  GET /images/profile/<file>
 ├── services/
 │   ├── tmdb.py              # TMDB API client wrapper
-│   ├── cache.py             # DB caching layer (7-day TTL)
+│   ├── cache.py             # DB caching layer (permanent, year-aware)
 │   └── comparison.py        # Shared cast/crew set-intersection logic
 ├── templates/
-│   ├── base.html            # Layout: navbar, footer, theme toggle
+│   ├── base.html            # Layout: floating theme toggle, footer
 │   ├── index.html           # Homepage: search boxes, suggestions, results area
 │   └── partials/
 │       ├── search_results.html   # Autocomplete dropdown items
