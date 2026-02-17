@@ -16,8 +16,48 @@
     <nav class="navbar bg-base-200/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
         <div class="container mx-auto flex justify-between">
             <a href="/" class="btn btn-ghost text-xl font-bold gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 48 40" fill="none">
+                    <!-- Back film strip (secondary, tilted slightly) -->
+                    <g transform="rotate(6, 30, 14)">
+                        <rect x="14" y="2" width="28" height="22" rx="2" class="stroke-secondary" stroke-width="1.5" fill="none" opacity="0.8"/>
+                        <!-- Sprocket holes top -->
+                        <rect x="16" y="4" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="21" y="4" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="26" y="4" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="31" y="4" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="36" y="4" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <!-- Sprocket holes bottom -->
+                        <rect x="16" y="19.5" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="21" y="19.5" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="26" y="19.5" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="31" y="19.5" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <rect x="36" y="19.5" width="3" height="2.5" rx="0.5" class="fill-secondary" opacity="0.4"/>
+                        <!-- Inner frame -->
+                        <rect x="17" y="8" width="22" height="10" rx="1" class="stroke-secondary" stroke-width="1" fill="none" opacity="0.5"/>
+                        <!-- Star in back frame -->
+                        <path d="M28 10.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6L28 16.4l-2.3 1.3.5-2.6-1.9-1.8 2.6-.4z" class="fill-secondary" opacity="0.5"/>
+                    </g>
+                    <!-- Front film strip (primary) -->
+                    <g transform="rotate(-3, 15, 24)">
+                        <rect x="2" y="12" width="28" height="22" rx="2" class="stroke-primary fill-base-100" stroke-width="1.5"/>
+                        <!-- Sprocket holes top -->
+                        <rect x="4" y="14" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="9" y="14" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="14" y="14" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="19" y="14" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="24" y="14" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <!-- Sprocket holes bottom -->
+                        <rect x="4" y="29.5" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="9" y="29.5" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="14" y="29.5" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="19" y="29.5" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <rect x="24" y="29.5" width="3" height="2.5" rx="0.5" class="fill-primary" opacity="0.4"/>
+                        <!-- Inner frame -->
+                        <rect x="5" y="18" width="22" height="10" rx="1" class="stroke-primary" stroke-width="1" fill="none" opacity="0.5"/>
+                        <!-- Person silhouette in front frame -->
+                        <circle cx="16" cy="21.5" r="2" class="fill-primary" opacity="0.6"/>
+                        <path d="M12 27.5c0-2.2 1.8-4 4-4s4 1.8 4 4" class="stroke-primary fill-none" stroke-width="1.2" opacity="0.6"/>
+                    </g>
                 </svg>
                 <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                     SameCast
