@@ -145,11 +145,13 @@ def _register_cli(app):
         click.echo(f"\nDone. Created puzzles for {created} day(s).")
 
     @game.command()
-    def curated():
+    @click.option("--force", is_flag=True, help="Overwrite existing rounds.")
+    def curated(force):
         """Insert curated puzzles (idempotent). All data is baked in."""
         from app.services.puzzle_data import CURATED_ROUNDS
 
         added = 0
+        replaced = 0
         skipped = 0
         for entry in CURATED_ROUNDS:
             existing = OddOneOutRound.query.filter_by(
@@ -157,8 +159,13 @@ def _register_cli(app):
                 round_number=entry["round_number"],
             ).first()
             if existing:
-                skipped += 1
-                continue
+                if force:
+                    db.session.delete(existing)
+                    db.session.flush()
+                    replaced += 1
+                else:
+                    skipped += 1
+                    continue
             row = OddOneOutRound(
                 puzzle_date=date.fromisoformat(entry["puzzle_date"]),
                 round_number=entry["round_number"],
@@ -180,7 +187,12 @@ def _register_cli(app):
             db.session.add(row)
             added += 1
         db.session.commit()
-        click.echo(f"Added {added} curated round(s) ({skipped} already existed).")
+        msg = f"Added {added} curated round(s)"
+        if replaced:
+            msg += f", replaced {replaced}"
+        if skipped:
+            msg += f" ({skipped} already existed)"
+        click.echo(msg + ".")
 
     @game.command("list")
     def list_puzzles():
