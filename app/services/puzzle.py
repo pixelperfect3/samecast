@@ -7,7 +7,7 @@ from app import db
 from app.models import Credit, OddOneOutRound, Person, Title
 
 # Day 1 of OddOneOut
-LAUNCH_DATE = date(2025, 2, 24)
+LAUNCH_DATE = date(2026, 2, 25)
 
 
 def puzzle_number(target_date=None):
