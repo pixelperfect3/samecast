@@ -97,3 +97,17 @@ def _register_cli(app):
         title.credits_cached = False
         db.session.commit()
         click.echo(f"Cleared cache for: {title.title} ({title.release_year})")
+
+    @cache.command("list")
+    def list_cache():
+        """List all cached titles."""
+        rows = Title.query.order_by(Title.cached_at.desc()).all()
+        if not rows:
+            click.echo("No titles cached.")
+            return
+        click.echo(f"  {'ID':>8}  {'Type':>5}  {'Year':>4}  Title")
+        click.echo(f"  {'─'*8}  {'─'*5}  {'─'*4}  {'─'*40}")
+        for t in rows:
+            year = t.release_year or "?"
+            click.echo(f"  {t.id:>8}  {t.media_type:>5}  {year:>4}  {t.title}")
+        click.echo(f"\n  {len(rows)} title(s) cached.")
