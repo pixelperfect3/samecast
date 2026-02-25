@@ -1,0 +1,14 @@
+<div class="card bg-base-200 shadow-lg p-6 md:p-8 animate-fade-in">
+    <h2 class="text-2xl font-bold mb-2">Results</h2>
+    <p class="text-5xl mb-4">{{ emojis }}</p>
+    <p class="text-xl font-semibold mb-4">{{ correct_count }} / 3</p>
+    <button onclick="window._share()" class="btn btn-primary gap-2 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+        Share Score
+    </button>
+    <div id="share-toast" class="hidden text-sm text-success mb-2">Copied to clipboard!</div>
+    <p class="text-sm opacity-60">Come back tomorrow for a new puzzle!</p>
+    <div class="mt-4">
+        <a href="/" class="link link-primary text-sm">Compare cast on SameCast &rarr;</a>
+    </div>
+</div>

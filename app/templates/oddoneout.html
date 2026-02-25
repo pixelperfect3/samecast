@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}OddOneOut #{{ puzzle_num }} — SameCast{% endblock %}
+
+{% block content %}
+<div class="text-center py-6 md:py-10 max-w-2xl mx-auto">
+    <!-- Header -->
+    <h1 class="text-3xl md:text-4xl font-bold mb-1">
+        <a href="/oddoneout" class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+            OddOneOut
+        </a>
+    </h1>
+    <p class="text-sm opacity-60 mb-1">Puzzle #{{ puzzle_num }}</p>
+    <p class="text-base-content/70 mb-6">
+        Three of these actors appeared in the same title. Pick the one who didn't.
+    </p>
+
+    <!-- Round indicator -->
+    <div id="round-indicator" class="flex justify-center gap-2 mb-6">
+        <span class="round-dot badge badge-outline badge-lg" data-round="1">Round 1</span>
+        <span class="round-dot badge badge-outline badge-lg opacity-40" data-round="2">Round 2</span>
+        <span class="round-dot badge badge-outline badge-lg opacity-40" data-round="3">Round 3</span>
+    </div>
+
+    <!-- Game area -->
+    <div id="game-area">
+        <!-- Actor grid (filled by JS) -->
+        <div id="actor-grid" class="grid grid-cols-2 gap-3 md:gap-4 mb-6"></div>
+
+        <!-- Result area (filled by HTMX or JS) -->
+        <div id="result-area"></div>
+    </div>
+
+    <!-- Complete area (hidden until game ends) -->
+    <div id="complete-area" class="hidden"></div>
+
+    <!-- Back link -->
+    <div class="mt-8">
+        <a href="/" class="link link-hover text-sm opacity-60">
+            &larr; Back to SameCast
+        </a>
+    </div>
+</div>
+
+<script>
+(function() {
+    var ROUNDS = {{ rounds_json | safe }};
+    var PUZZLE_DATE = "{{ puzzle_date }}";
+    var PUZZLE_NUM = {{ puzzle_num }};
+    var STORAGE_KEY = "oddoneout_" + PUZZLE_DATE;
+
+    var currentRound = 0; // 0-indexed
+    var scores = [];       // true/false per round
+    var gameComplete = false;
+
+    // Check localStorage for existing game state
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            var state = JSON.parse(saved);
+            scores = state.scores || [];
+            currentRound = scores.length;
+            if (currentRound >= 3) {
+                gameComplete = true;
+            }
+        } catch(e) {
+            // corrupt state, reset
+            scores = [];
+            currentRound = 0;
+        }
+    }
+
+    renderRound();
+
+    function renderRound() {
+        if (currentRound >= 3) {
+            showComplete();
+            return;
+        }
+
+        var round = ROUNDS[currentRound];
+        var grid = document.getElementById('actor-grid');
+        var resultArea = document.getElementById('result-area');
+        resultArea.innerHTML = '';
+        grid.innerHTML = '';
+
+        // Update round indicators
+        document.querySelectorAll('.round-dot').forEach(function(dot, i) {
+            dot.classList.remove('badge-primary', 'badge-success', 'badge-error', 'opacity-40');
+            if (i < scores.length) {
+                dot.classList.add(scores[i] ? 'badge-success' : 'badge-error');
+            } else if (i === currentRound) {
+                dot.classList.add('badge-primary');
+            } else {
+                dot.classList.add('opacity-40');
+            }
+        });
+
+        round.actors.forEach(function(actor, i) {
+            var card = document.createElement('button');
+            card.className = 'actor-card card card-compact bg-base-200 shadow-md hover:shadow-lg cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]';
+            card.style.animationDelay = (i * 50) + 'ms';
+            card.dataset.actorId = actor.id;
+
+            var profileSrc = actor.profile
+                ? '/images/profile/' + actor.profile.replace('/','')
+                : 'https://via.placeholder.com/185x278?text=No+Photo';
+
+            card.innerHTML =
+                '<figure class="pt-3 px-3">' +
+                    '<img src="' + profileSrc + '" alt="' + actor.name + '"' +
+                    ' class="rounded-lg w-24 h-36 md:w-32 md:h-48 object-cover bg-base-300"' +
+                    ' onerror="this.src=\'https://via.placeholder.com/185x278?text=No+Photo\'">' +
+                '</figure>' +
+                '<div class="card-body items-center text-center p-2">' +
+                    '<h3 class="card-title text-sm md:text-base">' + actor.name + '</h3>' +
+                '</div>';
+
+            card.addEventListener('click', function() {
+                if (card.classList.contains('disabled')) return;
+                submitGuess(actor.id, card);
+            });
+
+            grid.appendChild(card);
+        });
+    }
+
+    function submitGuess(actorId, clickedCard) {
+        // Disable all cards
+        document.querySelectorAll('.actor-card').forEach(function(c) {
+            c.classList.add('disabled', 'pointer-events-none');
+        });
+
+        var round = ROUNDS[currentRound];
+        var correct = actorId === round.outsider_id;
+        scores.push(correct);
+
+        // Save state
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({scores: scores}));
+
+        // Highlight cards
+        document.querySelectorAll('.actor-card').forEach(function(c) {
+            var id = parseInt(c.dataset.actorId);
+            if (id === round.outsider_id) {
+                c.classList.add('ring-2', 'ring-success', 'bg-success/10');
+            }
+            if (id === actorId && !correct) {
+                c.classList.add('ring-2', 'ring-error', 'bg-error/10');
+            }
+        });
+
+        // Show result
+        var resultArea = document.getElementById('result-area');
+        var isLast = (currentRound >= 2);
+
+        if (correct) {
+            resultArea.innerHTML =
+                '<div class="alert alert-success mt-4 animate-fade-in">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' +
+                    '<span>Correct! <strong>' + round.outsider_name + '</strong> was NOT in <em>' + round.title_name + '</em></span>' +
+                '</div>';
+        } else {
+            resultArea.innerHTML =
+                '<div class="alert alert-error mt-4 animate-fade-in">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' +
+                    '<span>Wrong! The odd one out was <strong>' + round.outsider_name + '</strong> (not in <em>' + round.title_name + '</em>)</span>' +
+                '</div>';
+        }
+
+        // Next button
+        var btnText = isLast ? 'See Results' : 'Next Round';
+        resultArea.innerHTML +=
+            '<button onclick="window._nextRound()" class="btn btn-primary mt-4 animate-fade-in">' +
+                btnText +
+            '</button>';
+    }
+
+    window._nextRound = function() {
+        currentRound++;
+        if (currentRound >= 3) {
+            showComplete();
+        } else {
+            renderRound();
+        }
+    };
+
+    function showComplete() {
+        gameComplete = true;
+        document.getElementById('game-area').classList.add('hidden');
+        var complete = document.getElementById('complete-area');
+        complete.classList.remove('hidden');
+
+        var correct = scores.filter(function(s){ return s; }).length;
+        var emojis = scores.map(function(s){ return s ? '\u{1F7E9}' : '\u{1F7E5}'; }).join('');
+
+        var shareText = 'OddOneOut #' + PUZZLE_NUM + ' \u2014 ' + correct + '/3\n' + emojis + '\nsamecast.com/oddoneout';
+
+        // Build round review HTML
+        var reviewHtml = '';
+        for (var i = 0; i < ROUNDS.length; i++) {
+            var r = ROUNDS[i];
+            var wasCorrect = scores[i];
+            var icon = wasCorrect ? '\u{1F7E9}' : '\u{1F7E5}';
+            var statusText = wasCorrect ? 'Correct' : 'Wrong';
+            var statusClass = wasCorrect ? 'text-success' : 'text-error';
+
+            var actorNames = r.actors.map(function(a) {
+                if (a.id === r.outsider_id) {
+                    return '<strong class="' + statusClass + '">' + a.name + '</strong>';
+                }
+                return a.name;
+            }).join(', ');
+
+            reviewHtml +=
+                '<div class="text-left p-3 bg-base-100 rounded-lg">' +
+                    '<div class="flex items-center gap-2 mb-1">' +
+                        '<span>' + icon + '</span>' +
+                        '<span class="font-semibold">Round ' + (i+1) + '</span>' +
+                        '<span class="text-sm ' + statusClass + '">(' + statusText + ')</span>' +
+                    '</div>' +
+                    '<p class="text-sm opacity-70">Title: <em>' + r.title_name + '</em></p>' +
+                    '<p class="text-sm opacity-70">Odd one out: <strong>' + r.outsider_name + '</strong></p>' +
+                '</div>';
+        }
+
+        complete.innerHTML =
+            '<div class="card bg-base-200 shadow-lg p-6 md:p-8 animate-fade-in">' +
+                '<h2 class="text-2xl font-bold mb-2">Results</h2>' +
+                '<p class="text-5xl mb-4">' + emojis + '</p>' +
+                '<p class="text-xl font-semibold mb-4">' + correct + ' / 3</p>' +
+                '<button onclick="window._share()" class="btn btn-primary gap-2 mb-4">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>' +
+                    'Share Score' +
+                '</button>' +
+                '<div id="share-toast" class="hidden text-sm text-success mb-2">Copied to clipboard!</div>' +
+                '<div id="review-section" class="hidden mt-4 space-y-2">' + reviewHtml + '</div>' +
+                '<button onclick="window._toggleReview()" id="review-btn" class="btn btn-outline btn-sm mt-4">Review Rounds</button>' +
+                '<p class="text-sm opacity-60 mt-4">Come back tomorrow for a new puzzle!</p>' +
+                '<div class="mt-4">' +
+                    '<a href="/" class="link link-primary text-sm">Compare cast on SameCast &rarr;</a>' +
+                '</div>' +
+            '</div>';
+
+        window._shareText = shareText;
+    }
+
+    window._share = function() {
+        var text = window._shareText;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(function() {
+                var toast = document.getElementById('share-toast');
+                toast.classList.remove('hidden');
+                setTimeout(function(){ toast.classList.add('hidden'); }, 2000);
+            });
+        }
+    };
+
+    window._toggleReview = function() {
+        var section = document.getElementById('review-section');
+        var btn = document.getElementById('review-btn');
+        if (section.classList.contains('hidden')) {
+            section.classList.remove('hidden');
+            btn.textContent = 'Hide Rounds';
+        } else {
+            section.classList.add('hidden');
+            btn.textContent = 'Review Rounds';
+        }
+    };
+})();
+</script>
+{% endblock %}

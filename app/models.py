@@ -75,3 +75,33 @@ class Suggestion(db.Model):
 
     def __repr__(self):
         return f"<Suggestion {self.id}: '{self.title_1}' & '{self.title_2}'>"
+
+
+class OddOneOutRound(db.Model):
+    __tablename__ = "oddoneout_rounds"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    puzzle_date = db.Column(db.Date, nullable=False)
+    round_number = db.Column(db.Integer, nullable=False)  # 1, 2, or 3
+    title_id = db.Column(db.Integer, nullable=False)
+    title_name = db.Column(db.String(500), nullable=False)
+    actor_1_id = db.Column(db.Integer, nullable=False)
+    actor_2_id = db.Column(db.Integer, nullable=False)
+    actor_3_id = db.Column(db.Integer, nullable=False)
+    outsider_id = db.Column(db.Integer, nullable=False)
+    actor_1_name = db.Column(db.String(300))
+    actor_2_name = db.Column(db.String(300))
+    actor_3_name = db.Column(db.String(300))
+    outsider_name = db.Column(db.String(300))
+    actor_1_profile = db.Column(db.String(200))
+    actor_2_profile = db.Column(db.String(200))
+    actor_3_profile = db.Column(db.String(200))
+    outsider_profile = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    __table_args__ = (
+        db.UniqueConstraint("puzzle_date", "round_number"),
+    )
+
+    def __repr__(self):
+        return f"<OddOneOutRound {self.puzzle_date} R{self.round_number}>"

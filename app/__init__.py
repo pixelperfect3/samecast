@@ -29,10 +29,12 @@ def create_app():
     from app.routes.main import main_bp
     from app.routes.search import search_bp
     from app.routes.images import images_bp
+    from app.routes.oddoneout import oddoneout_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(search_bp, url_prefix="/search")
     app.register_blueprint(images_bp, url_prefix="/images")
+    app.register_blueprint(oddoneout_bp, url_prefix="/oddoneout")
 
     with app.app_context():
         from app import models  # noqa: F401
@@ -44,7 +46,9 @@ def create_app():
 
 
 def _register_cli(app):
-    from app.models import Suggestion, Title
+    from datetime import date, timedelta
+
+    from app.models import OddOneOutRound, Suggestion, Title
 
     @app.cli.group()
     def suggestions():
@@ -111,3 +115,92 @@ def _register_cli(app):
             year = t.release_year or "?"
             click.echo(f"  {t.id:>8}  {t.media_type:>5}  {year:>4}  {t.title}")
         click.echo(f"\n  {len(rows)} title(s) cached.")
+
+    # --- OddOneOut game commands ---
+
+    @app.cli.group()
+    def game():
+        """Manage OddOneOut daily puzzles."""
+
+    @game.command()
+    @click.option("--days", default=7, help="Number of days to generate ahead.")
+    def seed(days):
+        """Generate puzzles for the next N days (default 7)."""
+        from app.services.puzzle import generate_rounds_for_date
+
+        today = date.today()
+        created = 0
+        for i in range(days):
+            target = today + timedelta(days=i)
+            existing = OddOneOutRound.query.filter_by(puzzle_date=target).count()
+            if existing >= 3:
+                click.echo(f"  {target}  — already has {existing} round(s), skipping.")
+                continue
+            try:
+                generate_rounds_for_date(target)
+                created += 1
+                click.echo(f"  {target}  — generated 3 rounds.")
+            except ValueError as e:
+                click.echo(f"  {target}  — ERROR: {e}")
+        click.echo(f"\nDone. Created puzzles for {created} day(s).")
+
+    @game.command("list")
+    def list_puzzles():
+        """List upcoming puzzles."""
+        rows = (
+            OddOneOutRound.query
+            .filter(OddOneOutRound.puzzle_date >= date.today())
+            .order_by(OddOneOutRound.puzzle_date, OddOneOutRound.round_number)
+            .all()
+        )
+        if not rows:
+            click.echo("No upcoming puzzles. Run 'flask game seed' to generate some.")
+            return
+        current_date = None
+        for r in rows:
+            if r.puzzle_date != current_date:
+                current_date = r.puzzle_date
+                click.echo(f"\n  {current_date}:")
+            click.echo(
+                f"    R{r.round_number}: {r.title_name} — "
+                f"{r.actor_1_name}, {r.actor_2_name}, {r.actor_3_name} "
+                f"(outsider: {r.outsider_name})"
+            )
+
+    @game.command()
+    @click.argument("puzzle_date")
+    @click.argument("round_num", type=int)
+    @click.argument("title_id", type=int)
+    @click.argument("title_name")
+    @click.argument("a1", type=int)
+    @click.argument("a2", type=int)
+    @click.argument("a3", type=int)
+    @click.argument("outsider", type=int)
+    def add(puzzle_date, round_num, title_id, title_name, a1, a2, a3, outsider):
+        """Manually add a curated round. Date format: YYYY-MM-DD."""
+        from app.models import Person
+
+        target = date.fromisoformat(puzzle_date)
+        persons = {p.id: p for p in Person.query.filter(Person.id.in_([a1, a2, a3, outsider])).all()}
+
+        row = OddOneOutRound(
+            puzzle_date=target,
+            round_number=round_num,
+            title_id=title_id,
+            title_name=title_name,
+            actor_1_id=a1,
+            actor_2_id=a2,
+            actor_3_id=a3,
+            outsider_id=outsider,
+            actor_1_name=persons.get(a1, Person(name="Unknown")).name,
+            actor_2_name=persons.get(a2, Person(name="Unknown")).name,
+            actor_3_name=persons.get(a3, Person(name="Unknown")).name,
+            outsider_name=persons.get(outsider, Person(name="Unknown")).name,
+            actor_1_profile=getattr(persons.get(a1), "profile_path", None),
+            actor_2_profile=getattr(persons.get(a2), "profile_path", None),
+            actor_3_profile=getattr(persons.get(a3), "profile_path", None),
+            outsider_profile=getattr(persons.get(outsider), "profile_path", None),
+        )
+        db.session.add(row)
+        db.session.commit()
+        click.echo(f"Added round {round_num} for {target}: {title_name}")
