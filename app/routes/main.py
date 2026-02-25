@@ -1,11 +1,35 @@
 import json
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, Response, render_template, request
 
 from app.models import Suggestion
 from app.services.comparison import find_shared
 
 main_bp = Blueprint("main", __name__)
+
+SITEMAP_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://samecast.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://samecast.com/oddoneout</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+</urlset>"""
+
+ROBOTS_TXT = """User-agent: *
+Allow: /
+Disallow: /search/
+Disallow: /images/
+
+Sitemap: https://samecast.com/sitemap.xml
+"""
+
+
+@main_bp.route("/sitemap.xml")
+def sitemap():
+    return Response(SITEMAP_XML, mimetype="application/xml")
+
+
+@main_bp.route("/robots.txt")
+def robots():
+    return Response(ROBOTS_TXT, mimetype="text/plain")
 
 
 @main_bp.route("/")
