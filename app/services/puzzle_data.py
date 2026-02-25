@@ -1,0 +1,63 @@
+# Curated OddOneOut puzzle rounds.
+# All data is denormalized so these can be inserted into any DB
+# without needing cached Person/Title records.
+#
+# Add new entries to CURATED_ROUNDS and run: flask game curated
+
+CURATED_ROUNDS = [
+    # --- 2026-02-25 ---
+    {
+        "puzzle_date": "2026-02-25",
+        "round_number": 1,
+        "title_id": 27205,
+        "title_name": "Inception",
+        "actor_1_id": 6193,
+        "actor_1_name": "Leonardo DiCaprio",
+        "actor_1_profile": "/vo4fltT9zZ1kH8nhLetz8MED6jp.jpg",
+        "actor_2_id": 24045,
+        "actor_2_name": "Joseph Gordon-Levitt",
+        "actor_2_profile": "/z2FA8js799xqtfiFjBTicFYdfk.jpg",
+        "actor_3_id": 2524,
+        "actor_3_name": "Tom Hardy",
+        "actor_3_profile": "/d81K0RH8UX7tZj49tZaQhZ9ewH.jpg",
+        "outsider_id": 1813,
+        "outsider_name": "Anne Hathaway",
+        "outsider_profile": "/nbccV2pMoyLTCeg5DQip24Eq0Jp.jpg",
+    },
+    {
+        "puzzle_date": "2026-02-25",
+        "round_number": 2,
+        "title_id": 4607,
+        "title_name": "Lost",
+        "actor_1_id": 19034,
+        "actor_1_name": "Evangeline Lilly",
+        "actor_1_profile": "/pJHX2jd7ytre3NQbF9nlyWUqxH3.jpg",
+        "actor_2_id": 12646,
+        "actor_2_name": "Terry O'Quinn",
+        "actor_2_profile": "/kSweOGPprLe1vDvu38wJQaWIih7.jpg",
+        "actor_3_id": 129101,
+        "actor_3_name": "Lance Reddick",
+        "actor_3_profile": "/22mVtEXZbpt0J7S0LhIhdkfRrZV.jpg",
+        "outsider_id": 17859,
+        "outsider_name": "Wendell Pierce",
+        "outsider_profile": "/r6yKahL6Z8l9aUX5qvWxTmWl8Nm.jpg",
+    },
+    {
+        "puzzle_date": "2026-02-25",
+        "round_number": 3,
+        "title_id": 361743,
+        "title_name": "Top Gun: Maverick",
+        "actor_1_id": 500,
+        "actor_1_name": "Tom Cruise",
+        "actor_1_profile": "/maf8PhSvDCdEwjEMbYfGpojR5RP.jpg",
+        "actor_2_id": 996701,
+        "actor_2_name": "Miles Teller",
+        "actor_2_profile": "/aciu7YM8fD0BzrrA6cJ5wDKZIA6.jpg",
+        "actor_3_id": 1700685,
+        "actor_3_name": "Lewis Pullman",
+        "actor_3_profile": "/axcp6FswcSS1YPzO43BbyXIh2B2.jpg",
+        "outsider_id": 933238,
+        "outsider_name": "Rebecca Ferguson",
+        "outsider_profile": "/lJloTOheuQSirSLXNA3JHsrMNfH.jpg",
+    },
+]

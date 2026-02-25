@@ -144,6 +144,44 @@ def _register_cli(app):
                 click.echo(f"  {target}  — ERROR: {e}")
         click.echo(f"\nDone. Created puzzles for {created} day(s).")
 
+    @game.command()
+    def curated():
+        """Insert curated puzzles (idempotent). All data is baked in."""
+        from app.services.puzzle_data import CURATED_ROUNDS
+
+        added = 0
+        skipped = 0
+        for entry in CURATED_ROUNDS:
+            existing = OddOneOutRound.query.filter_by(
+                puzzle_date=date.fromisoformat(entry["puzzle_date"]),
+                round_number=entry["round_number"],
+            ).first()
+            if existing:
+                skipped += 1
+                continue
+            row = OddOneOutRound(
+                puzzle_date=date.fromisoformat(entry["puzzle_date"]),
+                round_number=entry["round_number"],
+                title_id=entry["title_id"],
+                title_name=entry["title_name"],
+                actor_1_id=entry["actor_1_id"],
+                actor_2_id=entry["actor_2_id"],
+                actor_3_id=entry["actor_3_id"],
+                outsider_id=entry["outsider_id"],
+                actor_1_name=entry["actor_1_name"],
+                actor_2_name=entry["actor_2_name"],
+                actor_3_name=entry["actor_3_name"],
+                outsider_name=entry["outsider_name"],
+                actor_1_profile=entry.get("actor_1_profile"),
+                actor_2_profile=entry.get("actor_2_profile"),
+                actor_3_profile=entry.get("actor_3_profile"),
+                outsider_profile=entry.get("outsider_profile"),
+            )
+            db.session.add(row)
+            added += 1
+        db.session.commit()
+        click.echo(f"Added {added} curated round(s) ({skipped} already existed).")
+
     @game.command("list")
     def list_puzzles():
         """List upcoming puzzles."""
