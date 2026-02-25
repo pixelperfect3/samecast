@@ -16,6 +16,21 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{% block tw_title %}SameCast — Find Shared Cast & Crew{% endblock %}">
     <meta name="twitter:description" content="{% block tw_description %}Discover which actors, directors, writers, and crew are shared between any two movies or TV shows.{% endblock %}">
+    <!-- Structured Data -->
+    {% block jsonld %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "SameCast",
+        "url": "https://samecast.com",
+        "description": "Discover which actors, directors, writers, and crew are shared between any two movies or TV shows.",
+        "applicationCategory": "Entertainment",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0" }
+    }
+    </script>
+    {% endblock %}
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@2.0.3"></script>

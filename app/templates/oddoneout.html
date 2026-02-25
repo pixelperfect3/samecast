@@ -7,6 +7,23 @@
 {% block tw_title %}OddOneOut #{{ puzzle_num }} — Daily Movie Trivia{% endblock %}
 {% block tw_description %}Can you spot the actor who wasn't in the movie? Play OddOneOut, a daily movie trivia game from SameCast.{% endblock %}
 
+{% block jsonld %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "OddOneOut",
+    "url": "https://samecast.com/oddoneout",
+    "description": "A daily movie trivia game. Three actors appeared in the same title — can you spot the one who didn't?",
+    "applicationCategory": "Game",
+    "genre": "Trivia",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0" },
+    "isPartOf": { "@type": "WebSite", "name": "SameCast", "url": "https://samecast.com" }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="text-center py-6 md:py-10 max-w-2xl mx-auto">
     <!-- Header -->
