@@ -58,4 +58,20 @@ def compare():
         return render_template("partials/error.html",
                                message="Something went wrong fetching data. Please try again.")
 
+    result["permalink"] = f"https://samecast.com/compare/{title_id_1}-{media_type_1}/{title_id_2}-{media_type_2}"
     return render_template("partials/comparison.html", **result)
+
+
+@main_bp.route("/compare/<int:id1>-<type1>/<int:id2>-<type2>")
+def compare_permalink(id1, type1, id2, type2):
+    """Shareable comparison URL: /compare/27205-movie/49026-movie"""
+    if type1 not in ("movie", "tv") or type2 not in ("movie", "tv"):
+        return render_template("partials/error.html", message="Invalid media type."), 404
+
+    try:
+        result = find_shared(id1, type1, id2, type2)
+    except Exception:
+        return render_template("partials/error.html",
+                               message="Something went wrong fetching data. Please try again."), 500
+
+    return render_template("comparison_page.html", **result)
